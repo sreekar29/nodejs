@@ -1,19 +1,25 @@
-const express = require('express');
+const express = require("express");
 
 const app = express();
 
-app.get("/", (req, res) => {
-    res.send("Hello from the server");
+const {adminAuth, userAuth} = require("./middlewares/auth");
+
+app.get("/admin/createUser", adminAuth, (req,res)=>{
+    res.send("User created successfully");
+})
+
+app.get("/user/getUser", userAuth, (req,res)=>{
+    res.send("User details fetched successfully");
 });
 
-app.get("/about", (req, res) => {
-    res.send("Hello from about page");
+app.get("/admin/deleteAllUsers", adminAuth, (req,res)=>{
+    res.send("All users deleted");
 });
 
-app.get("/contact", (req, res) => {
-    res.send("Hello from contact page");
+app.delete("/admin/deleteUser", adminAuth, (req,res)=>{
+    res.send("User deleted successfully");
 });
 
 app.listen(7777, () => {
-    console.log("Server is running on port 7777");
+  console.log("Server is running on port 7777");
 });
