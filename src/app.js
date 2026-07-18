@@ -1,23 +1,26 @@
 const express = require("express");
-
+const connectDB = require("./config/database");
 const app = express();
+const User = require("./models/user");
 
-const {adminAuth, userAuth} = require("./middlewares/auth");
+connectDB()
+  .then(() => {
+    console.log("Database connected successfully");
+  })
+  .catch((err) => {
+    console.log("Database connection failed");
+  });
 
-app.get("/admin/createUser", adminAuth, (req,res)=>{
-    res.send("User created successfully");
-})
-
-app.get("/user/getUser", userAuth, (req,res)=>{
-    res.send("User details fetched successfully");
-});
-
-app.get("/admin/deleteAllUsers", adminAuth, (req,res)=>{
-    res.send("All users deleted");
-});
-
-app.delete("/admin/deleteUser", adminAuth, (req,res)=>{
-    res.send("User deleted successfully");
+app.use(express.json());
+app.post("/signup", async (req, res) => {
+  const user = new User(req.body);
+  //   await user.save();
+  try {
+    await user.save();
+    res.status(201).send("User created successfully");
+  } catch (err) {
+    res.status(500).send("Error creating user");
+  }
 });
 
 app.listen(7777, () => {
